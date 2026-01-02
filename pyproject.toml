@@ -1,0 +1,65 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mldsa-mu"
+dynamic = ["version"]
+description = 'Python library for generating external μ (mu) values as specified by ML-DSA'
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+keywords = []
+authors = [
+  { name = "Neil Smith", email = "neil@nsmith.net" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = [
+    "pyasn1>=0.6.1,<1.0",
+    "pyasn1-modules>=0.4.2,<1.0",
+]
+
+[project.urls]
+Documentation = "https://github.com/nsmithuk/mldsa-mu-py#readme"
+Issues = "https://github.com/nsmithuk/mldsa-mu-py/issues"
+Source = "https://github.com/nsmithuk/mldsa-mu-py"
+
+[tool.hatch.version]
+path = "src/mldsa_mu/__about__.py"
+
+[tool.hatch.envs.dev]
+dependencies = [
+    "ruff",
+    "pytest",
+    "mypy",
+]
+[tool.hatch.build.targets.sdist]
+exclude = [
+  "/dist",
+  "/tests",
+  "/.github",
+]
+
+[tool.hatch.envs.dev.scripts]
+fmt = [
+  "ruff check --select I --fix .",
+  "ruff format ."
+]
+listbuild = [
+  "tar -tzf dist/*.tar.gz",
+  "unzip -l dist/*.whl"
+]
+typing = "mypy --config-file pyproject.toml --install-types --non-interactive {args:src/mldsa_mu tests}"
+
+[tool.ruff]
+line-length = 100
