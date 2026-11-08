@@ -1,5 +1,7 @@
 import base64
 import hashlib
+import json
+from pathlib import Path
 
 import pytest
 from pyasn1.codec.der import encoder
@@ -12,6 +14,8 @@ from mldsa_mu import (
     public_key_from_pkix_b64,
 )
 from mldsa_mu.mu import MU_SIZE, TR_SIZE
+
+VECTORS_PATH = Path(__file__).parent / "nist_acvp_vectors.json"
 
 
 def make_spki_der(subject_public_key_bytes: bytes, algorithm_oid: str = "1.2.3.4.5") -> bytes:
@@ -165,3 +169,27 @@ class TestGenerateMu:
         mu2 = generate(public_key, message, context=c2)
 
         assert mu1 != mu2
+
+
+def _load_nist_vectors():
+    with open(VECTORS_PATH) as f:
+        return json.load(f)
+
+
+class TestNistAcvpVectors:
+    """
+    Test against inputs from NIST ACVP-Server ML-DSA-sigGen-FIPS204 vectors.
+    Source: https://github.com/usnistgov/ACVP-Server/tree/master/gen-val/json-files/ML-DSA-sigGen-FIPS204
+    """
+
+    @pytest.mark.parametrize("vector", _load_nist_vectors(), ids=lambda v: f"{v['parameterSet']}-tc{v['tcId']}")
+    def test_mu_matches_expected(self, vector):
+        pk = bytes.fromhex(vector["pk"])
+        message = bytes.fromhex(vector["message"])
+        context = bytes.fromhex(vector["context"]) if vector["context"] else b""
+        expected_mu = bytes.fromhex(vector["expected_mu"])
+
+        mu = generate(pk, message, context=context)
+
+        assert mu == expected_mu
+        assert len(mu) == MU_SIZE

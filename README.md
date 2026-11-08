@@ -1,8 +1,13 @@
 # mldsa-mu
 
+![Tests](https://github.com/nsmithuk/mldsa-mu-py/actions/workflows/main.yml/badge.svg?branch=main)
+[![PyPI Downloads](https://static.pepy.tech/personalized-badge/mldsa-mu?period=total&units=INTERNATIONAL_SYSTEM&left_color=GRAY&right_color=GREEN&left_text=downloads)](https://pepy.tech/projects/mldsa-mu)
+
 A small Python library for generating **external μ (mu)** values as specified by **ML-DSA (FIPS 204)**.
 
 This library is intended for use in systems that need to compute μ outside of a full ML-DSA signing implementation (for example: KMS-style services, HSM adapters, or test tooling).
+
+If you're using this library with **AWS KMS**, see [Using ML-DSA External μ with AWS KMS](https://nsmith.net/aws-kms-mldsa-external-mu) for a worked example.
 
 ---
 
